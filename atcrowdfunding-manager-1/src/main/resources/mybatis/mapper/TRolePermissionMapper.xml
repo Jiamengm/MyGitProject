@@ -6,6 +6,18 @@
     <result column="roleid" jdbcType="INTEGER" property="roleid" />
     <result column="permissionid" jdbcType="INTEGER" property="permissionid" />
   </resultMap>
+
+  <select id="listPermissionByRoleId" resultType="java.lang.Integer">
+    select permissionid from t_role_permission where roleid = #{roleId}
+  </select>
+
+  <insert id="saveRoleAndPermissionRelationship">
+    insert into t_role_permission (roleid,permissionid) values
+    <foreach collection="ids" item="permissionId" separator=",">
+      (#{roleId},#{permissionId})
+    </foreach>
+  </insert>
+
   <sql id="Example_Where_Clause">
     <where>
       <foreach collection="oredCriteria" item="criteria" separator="or">
@@ -134,7 +146,8 @@
       <include refid="Example_Where_Clause" />
     </if>
   </select>
-  <update id="updateByExampleSelective" parameterType="map">
+
+    <update id="updateByExampleSelective" parameterType="map">
     update t_role_permission
     <set>
       <if test="record.id != null">

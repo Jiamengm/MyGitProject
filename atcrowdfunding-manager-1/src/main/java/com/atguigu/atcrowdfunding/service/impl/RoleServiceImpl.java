@@ -2,8 +2,11 @@ package com.atguigu.atcrowdfunding.service.impl;
 
 import com.atguigu.atcrowdfunding.bean.TRole;
 import com.atguigu.atcrowdfunding.bean.TRoleExample;
+import com.atguigu.atcrowdfunding.bean.TRolePermission;
+import com.atguigu.atcrowdfunding.bean.TRolePermissionExample;
 import com.atguigu.atcrowdfunding.dao.TAdminRoleMapper;
 import com.atguigu.atcrowdfunding.dao.TRoleMapper;
+import com.atguigu.atcrowdfunding.dao.TRolePermissionMapper;
 import com.atguigu.atcrowdfunding.service.RoleService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -24,6 +27,9 @@ public class RoleServiceImpl implements RoleService {
 
     @Autowired
     private TAdminRoleMapper adminRoleMapper;
+
+    @Autowired
+    private TRolePermissionMapper rolePermissionMapper;
 
     @Override
     public PageInfo<TRole> listRolePage(Map<String, Object> paramMap) {
@@ -98,5 +104,20 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public void deleteAdminAndRoleRelationship(Integer adminId, Integer[] roleId) {
         adminRoleMapper.deleteAdminAndRoleRelationship(adminId,roleId);
+    }
+
+    @Override
+    public List<Integer> listPermissionByRoleId(Integer roleId) {
+        return rolePermissionMapper.listPermissionByRoleId(roleId);
+    }
+
+    @Override
+    public void saveRoleAndPermissionRelationship(Integer roleId, Integer[] ids) {
+        TRolePermissionExample example = new TRolePermissionExample();
+        example.createCriteria().andRoleidEqualTo(roleId);
+        rolePermissionMapper.deleteByExample(example);
+        if(ids != null && ids.length != 0){
+            rolePermissionMapper.saveRoleAndPermissionRelationship(roleId,ids);
+        }
     }
 }

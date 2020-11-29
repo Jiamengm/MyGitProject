@@ -5,6 +5,16 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
   </resultMap>
+
+<!--  listRoleByAdminId-->
+  <select id="listRoleByAdminId" resultType="com.atguigu.atcrowdfunding.bean.TRole">
+      select * from t_role inner join t_admin_role
+      on t_role.id = t_admin_role.roleid
+      inner join t_admin
+      on t_admin_role.adminid = t_admin.id
+      where t_admin.id = #{adminId}
+    </select>
+
   <sql id="Example_Where_Clause">
     <where>
       <foreach collection="oredCriteria" item="criteria" separator="or">
@@ -125,7 +135,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </select>
-  <update id="updateByExampleSelective" parameterType="map">
+    <update id="updateByExampleSelective" parameterType="map">
     update t_role
     <set>
       <if test="record.id != null">

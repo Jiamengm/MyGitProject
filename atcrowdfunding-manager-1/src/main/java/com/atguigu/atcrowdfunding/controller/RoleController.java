@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -19,6 +20,23 @@ public class RoleController {
 
     @Autowired
     private RoleService roleService;
+
+
+    @ResponseBody
+    @RequestMapping("/role/doAssignPermissionToRole")
+    public String doAssignPermissionToRole(Integer roleId,Integer[] ids){
+        roleService.saveRoleAndPermissionRelationship(roleId,ids);
+        return "ok";
+    }
+
+    @ResponseBody
+    @RequestMapping("/role/listPermissionByRoleId")
+    public List<Integer> listPermissionByRoleId(Integer roleId){
+
+        List<Integer> permissionIds = roleService.listPermissionByRoleId(roleId);
+        return permissionIds;
+    }
+
 
     @ResponseBody
     @RequestMapping("/role/deleteBatch")

@@ -141,7 +141,7 @@
         </dependency>
 
 
-        <!-- 权限框架
+        <!-- 权限框架-->
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-web</artifactId>
@@ -154,7 +154,7 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-taglibs</artifactId>
         </dependency>
-        -->
+
         <dependency>
             <groupId>com.atguigu.atcrowdfunding</groupId>
             <artifactId>atcrowdfunding-common-1</artifactId>

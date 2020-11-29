@@ -10,6 +10,7 @@
     <meta name="author" content="">
 
     <%@include file="/WEB-INF/jsp/common/css.jsp" %>
+    <link rel="stylesheet" href="${PATH}/static/ztree/zTreeStyle.css">
     <style>
         .tree li {
             list-style-type: none;
@@ -137,7 +138,30 @@
         </div>
     </div>
 </div>
+
+
+<!-- Modal 给角色分配许可-->
+<div class="modal fade" id="assignModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="assignModalLabel">给角色分配许可</h4>
+            </div>
+            <div class="modal-body">
+                <ul id="treeDemo" class="ztree"></ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button id="assignBtn" type="button" class="btn btn-primary">分配</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <%@include file="/WEB-INF/jsp/common/js.jsp" %>
+<script type="text/javascript" src="${PATH}/static/ztree/jquery.ztree.all-3.5.min.js"></script>
 <script type="text/javascript">
 
     $(function () {
@@ -187,7 +211,7 @@
             content += '	<td><input roleId="' + e.id + '" type="checkbox"></td>';
             content += '    <td>' + e.name + '</td>';
             content += '    <td>';
-            content += '		<button type="button" class="btn btn-success btn-xs"><i class=" glyphicon glyphicon-check"></i></button>';
+            content += '		<button roleId ="'+ e.id +'" type="button" class="permissionModalPopBtn btn btn-success btn-xs"><i class=" glyphicon glyphicon-check"></i></button>';
             content += '		<button type="button" roleId="' + e.id + '"class="updateClass btn btn-primary btn-xs"><i class=" glyphicon glyphicon-pencil"></i></button>';
             content += '		<button type="button" roleName="' + e.name + '" roleId="' + e.id + '" class="deleteClass btn btn-danger btn-xs"><i class=" glyphicon glyphicon-remove"></i></button>';
             content += '	</td>';
@@ -347,6 +371,88 @@
                 layer.close(index);
                 return false;
             });
+    });
+
+
+    //角色添加权限
+    var roleId = null;
+    $("tbody").on("click",".permissionModalPopBtn",function () {
+        roleId = $(this).attr("roleId");
+        // alert(roleId);
+        initTree();
+
+        $("#assignModal").modal({
+            show:true,
+            backdrop:"static",
+            keyboard:false
+        });
+
+    });
+    function initTree() {
+        var setting ={
+            data:{
+                simpleData:{
+                    enable:true,
+                    pIdKey:"pid"
+                },
+                key:{
+                    url:"xUrl",
+                    name:"title"
+                }
+            },
+            view:{
+                addDiyDom: function(treeId,treeNode){
+                    $("#"+treeNode.tId+"_ico").removeClass();
+                    $("#"+treeNode.tId+"_span").before('<span class="'+treeNode.icon+'"></span>');
+                }
+            },
+            check: {
+                enable: true
+            }
+        };
+        //1.加载数据
+        $.get("${PATH}/permission/loadTree",function (result) {
+            var tree = $.fn.zTree.init($("#treeDemo"), setting, result);
+            var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+            treeObj.expandAll(true);
+
+
+            //2.回显数据,把已经分配的许可id查询出来
+            $.get("${PATH}/role/listPermissionByRoleId",{roleId:roleId},function (result) {
+                console.log(result);
+                $.each(result,function (i,e) {
+                    var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+                    var node = treeObj.getNodeByParam("id", e, null);
+                    treeObj.checkNode(node, true, false);
+                })
+            });
+        });
+    };
+    //分配许可
+    $("#assignBtn").click(function () {
+        var rid = roleId;
+        var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+        var nodes = treeObj.getCheckedNodes(true);
+
+        var str = "roleId=" + rid;
+        $.each(nodes,function (i, e) {
+            var permissionId = e.id;
+            str += "&";
+            str += "ids=" + permissionId;
+        });
+        $.ajax({
+            url:"${PATH}/role/doAssignPermissionToRole",
+            type:"post",
+            data:str,
+            success:function (result) {
+                if("ok"==result){
+                    $("#assignModal").modal('hide');
+                    layer.msg("分配成功");
+                }else{
+                    layer.msg("分配失败");
+                };
+            }
+        });
     });
 
 </script>
