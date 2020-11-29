@@ -24,4 +24,8 @@ public interface RoleService {
     List<TRole> listAll();
 
     List<Integer> listRoleIdByAdminId(Integer id);
+
+    void saveAdminAndRoleRelationship(Integer adminId, Integer[] roleId);
+
+    void deleteAdminAndRoleRelationship(Integer adminId, Integer[] roleId);
 }

@@ -22,7 +22,7 @@ public class RoleServiceImpl implements RoleService {
     @Autowired
     private TRoleMapper roleMapper;
 
-
+    @Autowired
     private TAdminRoleMapper adminRoleMapper;
 
     @Override
@@ -88,5 +88,15 @@ public class RoleServiceImpl implements RoleService {
     public List<Integer> listRoleIdByAdminId(Integer id) {
         List<Integer> roleIds = adminRoleMapper.listRoleIdByAdminId(id);
         return roleIds;
+    }
+
+    @Override
+    public void saveAdminAndRoleRelationship(Integer adminId, Integer[] roleId) {
+        adminRoleMapper.saveAdminAndRoleRelationship(adminId,roleId);
+    }
+
+    @Override
+    public void deleteAdminAndRoleRelationship(Integer adminId, Integer[] roleId) {
+        adminRoleMapper.deleteAdminAndRoleRelationship(adminId,roleId);
     }
 }

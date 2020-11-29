@@ -30,4 +30,8 @@ public interface TAdminRoleMapper {
 
     List<Integer> listRoleIdByAdminId(Integer id);
 
+    void saveAdminAndRoleRelationship(@Param("adminId") Integer adminId,@Param("roleIds") Integer[] roleId);
+
+    void deleteAdminAndRoleRelationship(@Param("adminId") Integer adminId,@Param("roleIds") Integer[] roleId);
+
 }

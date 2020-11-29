@@ -95,7 +95,7 @@
                                                     class=" glyphicon glyphicon-remove"></i></button>
                                         </c:if>
                                         <c:if test="${admin.id != 1}">
-                                            <button onclick="window.location = '${PATH}/admin/assignRole'" type="button" class="btn btn-success btn-xs"><i
+                                            <button onclick="window.location = '${PATH}/admin/assignRole?id=${admin.id}'" type="button" class="btn btn-success btn-xs"><i
                                                     class=" glyphicon glyphicon-check"></i></button>
                                             <button onclick="window.location='${PATH}/admin/toUpdate?id=${admin.id}&pageNo=${pageInfo.pageNum}'"
                                                     type="button" class="btn btn-primary btn-xs"><i

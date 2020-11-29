@@ -5,12 +5,12 @@ import com.atguigu.atcrowdfunding.bean.TRole;
 import com.atguigu.atcrowdfunding.service.AdminService;
 import com.atguigu.atcrowdfunding.service.RoleService;
 import com.github.pagehelper.PageInfo;
-import com.sun.deploy.net.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
@@ -27,6 +27,20 @@ public class AdminController {
 
     @Autowired
     private AdminService adminService;
+
+    @ResponseBody
+    @RequestMapping("/admin/doUnAssignRoleToAdmin")
+    public String doUnAssignRoleToAdmin(Integer adminId,Integer[] roleId){
+        roleService.deleteAdminAndRoleRelationship(adminId,roleId);
+        return "ok";
+    }
+
+    @ResponseBody
+    @RequestMapping("/admin/doAssignRoleToAdmin")
+    public String doAssignRoleToAdmin(Integer adminId,Integer[] roleId){
+        roleService.saveAdminAndRoleRelationship(adminId,roleId);
+        return "ok";
+    }
 
 
     @RequestMapping("/admin/assignRole")

@@ -9,11 +9,11 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <%@include file="/WEB-INF/jsp/common/css.jsp"%>
+    <%@include file="/WEB-INF/jsp/common/css.jsp" %>
     <style>
         .tree li {
             list-style-type: none;
-            cursor:pointer;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -33,22 +33,29 @@
                 <div class="panel-body">
                     <form role="form" class="form-inline">
                         <div class="form-group">
-                            <label >未分配角色列表</label><br>
-                            <select id="leftRoleList" class="form-control" multiple size="10" style="width:250px;overflow-y:auto;">
-
+                            <label>未分配角色列表</label><br>
+                            <select id="leftRoleList" class="form-control" multiple size="10"
+                                    style="width:250px;overflow-y:auto;">
+                                <c:forEach items="${unAssignList}" var="role">
+                                    <option value="${role.id}">${role.name}</option>
+                                </c:forEach>
                             </select>
                         </div>
                         <div class="form-group">
                             <ul>
                                 <li id="leftToRightBtn" class="btn btn-default glyphicon glyphicon-chevron-right"></li>
                                 <br>
-                                <li id="rightToLeftBtn" class="btn btn-default glyphicon glyphicon-chevron-left" style="margin-top:20px;"></li>
+                                <li id="rightToLeftBtn" class="btn btn-default glyphicon glyphicon-chevron-left"
+                                    style="margin-top:20px;"></li>
                             </ul>
                         </div>
                         <div class="form-group" style="margin-left:40px;">
-                            <label >已分配角色列表</label><br>
-                            <select id="rightRoleList" class="form-control" multiple size="10" style="width:250px;overflow-y:auto;">
-
+                            <label>已分配角色列表</label><br>
+                            <select id="rightRoleList" class="form-control" multiple size="10"
+                                    style="width:250px;overflow-y:auto;">
+                                <c:forEach items="${assignList}" var="role">
+                                    <option value="${role.id}">${role.name}</option>
+                                </c:forEach>
                             </select>
                         </div>
                     </form>
@@ -61,7 +68,8 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
+                        class="sr-only">Close</span></button>
                 <h4 class="modal-title" id="myModalLabel">帮助</h4>
             </div>
             <div class="modal-body">
@@ -83,13 +91,13 @@
         </div>
     </div>
 </div>
-<%@include file="/WEB-INF/jsp/common/js.jsp"%>
+<%@include file="/WEB-INF/jsp/common/js.jsp" %>
 <script type="text/javascript">
     $(function () {
-        $(".list-group-item").click(function(){
-            if ( $(this).find("ul") ) {
+        $(".list-group-item").click(function () {
+            if ($(this).find("ul")) {
                 $(this).toggleClass("tree-closed");
-                if ( $(this).hasClass("tree-closed") ) {
+                if ($(this).hasClass("tree-closed")) {
                     $("ul", this).hide("fast");
                 } else {
                     $("ul", this).show("fast");
@@ -99,6 +107,66 @@
 
         $("#addBtn").click(function () {
             $("#addForm").submit();
+        });
+    });
+    //分配角色
+    $("#leftToRightBtn").click(function () {
+        var leftSelected = $("#leftRoleList option:selected");
+        if (leftSelected.length == 0) {
+            layer.msg("请选择要分配的角色");
+            return false;
+        }
+        var adminId = ${param.id};
+        var str = "adminId=" + adminId;
+        $.each(leftSelected,function (i, e) {
+            str += "&";
+            str += "roleId=" + e.value;
+        })
+        // alert(str);
+        $.ajax({
+           url:"${PATH}/admin/doAssignRoleToAdmin",
+           type:"post",
+           data:str,
+           success:function (result) {
+               if (result == 'ok'){
+                   $("#rightRoleList").append(leftSelected.clone());
+                   leftSelected.remove();
+                   layer.msg("分配成功",{icon:6});
+               } else {
+                   layer.msg("分配失败",{icon:5});
+               }
+           }
+        });
+    });
+
+
+    //取消分配角色
+    $("#rightToLeftBtn").click(function () {
+        var rightSelected = $("#rightRoleList option:selected");
+        if (rightSelected.length == 0) {
+            layer.msg("请选择要取消分配的角色");
+            return false;
+        }
+        var adminId = ${param.id};
+        var str = "adminId=" + adminId;
+        $.each(rightSelected,function (i, e) {
+            str += "&";
+            str += "roleId=" + e.value;
+        })
+        // alert(str);
+        $.ajax({
+            url:"${PATH}/admin/doUnAssignRoleToAdmin",
+            type:"post",
+            data:str,
+            success:function (result) {
+                if (result == 'ok'){
+                    $("#leftRoleList").append(rightSelected.clone());
+                    rightSelected.remove();
+                    layer.msg("取消分配成功",{icon:6});
+                } else {
+                    layer.msg("取消分配失败",{icon:5});
+                }
+            }
         });
     });
 </script>

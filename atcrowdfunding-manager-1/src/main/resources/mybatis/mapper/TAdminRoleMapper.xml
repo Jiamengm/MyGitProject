@@ -6,6 +6,28 @@
     <result column="adminid" jdbcType="INTEGER" property="adminid" />
     <result column="roleid" jdbcType="INTEGER" property="roleid" />
   </resultMap>
+
+<!--  list-->
+  <select id="listRoleIdByAdminId" resultType="java.lang.Integer">
+      select roleid from t_admin_role where adminid = #{roleId}
+    </select>
+
+<!--  insert-->
+  <insert id="saveAdminAndRoleRelationship">
+    insert into t_admin_role (adminid,roleid) values
+    <foreach collection="roleIds" item="roleId" separator=",">
+      (#{adminId},#{roleId})
+    </foreach>
+  </insert>
+
+<!--delete-->
+  <delete id="deleteAdminAndRoleRelationship">
+    delete from t_admin_role where adminid = #{adminId} and roleid in
+    <foreach collection="roleIds" item="roleId" open="(" close=")" separator=",">
+      #{roleId}
+    </foreach>
+  </delete>
+
   <sql id="Example_Where_Clause">
     <where>
       <foreach collection="oredCriteria" item="criteria" separator="or">
@@ -82,7 +104,7 @@
     </if>
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from t_admin_role
     where id = #{id,jdbcType=INTEGER}
@@ -97,6 +119,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
+
   <insert id="insert" parameterType="com.atguigu.atcrowdfunding.bean.TAdminRole">
     insert into t_admin_role (id, adminid, roleid
       )
@@ -134,9 +157,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </select>
-    <select id="listRoleIdByAdminId" resultType="java.lang.Integer">
-      select roleid from t_admin_role where adminid = #{roleId}
-    </select>
+
     <update id="updateByExampleSelective" parameterType="map">
     update t_admin_role
     <set>
