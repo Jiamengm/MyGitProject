@@ -11,11 +11,5 @@
         <module name="atcrowdfunding-common-1" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="atcrowdfunding-common-1" target="1.8" />
-      <module name="atcrowdfunding-main-1" target="1.8" />
-      <module name="atcrowdfunding-manager-1" target="1.8" />
-      <module name="atcrowdfunding-parent-1" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>

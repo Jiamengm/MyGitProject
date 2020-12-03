@@ -4,6 +4,7 @@ import com.atguigu.atcrowdfunding.bean.TRole;
 import com.atguigu.atcrowdfunding.service.RoleService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -77,6 +78,7 @@ public class RoleController {
         return "ok";
     }
 
+    @PreAuthorize("hasRole('班主任')")
     @RequestMapping("/role/index")
     public String index() {
         return "role/index";

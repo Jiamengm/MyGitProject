@@ -8,6 +8,18 @@
     <result column="icon" jdbcType="VARCHAR" property="icon" />
     <result column="pid" jdbcType="INTEGER" property="pid" />
   </resultMap>
+
+<!--  listPermissionByAdminId-->
+  <select id="listPermissionByAdminId" resultType="com.atguigu.atcrowdfunding.bean.TPermission">
+    select * from t_permission inner join t_role_permission
+    on t_permission.id = t_role_permission.permissionid
+    inner join t_role on t_role_permission.roleid = t_role.id
+    inner join t_admin_role on t_role.id = t_admin_role.roleid
+    inner join t_admin on t_admin_role.roleid = t_admin.id
+    where t_admin.id = #{adminId}
+
+  </select>
+
   <sql id="Example_Where_Clause">
     <where>
       <foreach collection="oredCriteria" item="criteria" separator="or">
@@ -148,7 +160,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </select>
-  <update id="updateByExampleSelective" parameterType="map">
+    <update id="updateByExampleSelective" parameterType="map">
     update t_permission
     <set>
       <if test="record.id != null">

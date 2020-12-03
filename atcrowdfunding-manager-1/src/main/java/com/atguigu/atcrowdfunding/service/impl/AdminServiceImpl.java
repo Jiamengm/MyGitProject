@@ -11,6 +11,7 @@ import com.atguigu.atcrowdfunding.util.MD5Util;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -77,7 +78,8 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public void saveAdmin(TAdmin admin) {
 
-        admin.setUserpswd(MD5Util.digest(Const.DEFALUT_PASSWORD));
+//        admin.setUserpswd(MD5Util.digest(Const.DEFALUT_PASSWORD));
+        admin.setCreatetime(new BCryptPasswordEncoder().encode(Const.DEFALUT_PASSWORD));
         admin.setCreatetime(DateUtil.getFormatTime());
 
         adminMapper.insert(admin);

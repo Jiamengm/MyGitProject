@@ -39,7 +39,7 @@ public class SecurityUserDetailServiceImpl implements UserDetailsService {
         example.createCriteria().andLoginacctEqualTo(loginacct);
         List<TAdmin> list = adminMapper.selectByExample(example);
 
-        if(list.isEmpty() && list.size() == 0){
+        if(list.isEmpty() || list.size() == 0){
             return null;
         }
         TAdmin admin = list.get(0);

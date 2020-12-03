@@ -8,6 +8,7 @@
     <artifactId>atcrowdfunding-parent-1</artifactId>
     <groupId>com.atguigu.atcrowdfunding</groupId>
     <version>1.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
   </parent>
 
   <artifactId>atcrowdfunding-main-1</artifactId>
